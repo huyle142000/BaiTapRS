@@ -1,0 +1,16 @@
+form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 0 1 50%;
+}
+
+form #idInput,
+form #phoneNumber {
+    width: 95%;
+}
+.form-group .message{
+color: red;
+}

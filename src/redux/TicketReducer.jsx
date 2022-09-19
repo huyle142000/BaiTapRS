@@ -34,7 +34,7 @@ export const TicketReducer = (state = initialState, action) => {
 
             //thay đổi mảng bill 
             state.danhSachGheDaDat = action.danhsach;
-            console.log(action.danhsach)
+        
             return { ...state }
         case "IN_HOA_DON":
             let newDS = [...state.danhSachGheDaDat];

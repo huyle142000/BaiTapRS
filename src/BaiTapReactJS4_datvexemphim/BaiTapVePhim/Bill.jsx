@@ -3,7 +3,6 @@ import { connect } from "react-redux"
 class Bill extends Component {
     renderBill() {
         let bill = this.props.danhSachGheDaDat;
-        console.log(bill)
         return (
             bill.map((item, i) => {
                 return (
@@ -21,7 +20,6 @@ class Bill extends Component {
     }
     render() {
         let bill = this.props.danhSachGheDaDat;
-        console.log(bill.length)
         return (
             <div style={{ marginTop: "40px" }}>
                 <h2>DANH SÁCH GHẾ BẠN CHỌN</h2>

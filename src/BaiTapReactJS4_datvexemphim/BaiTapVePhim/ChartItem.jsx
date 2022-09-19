@@ -9,7 +9,6 @@ class ChartItem extends Component {
             <React.Fragment>
                 {arrChairs.map((item, i) => {
                     let { hang } = item
-                    // console.log(item.danhSachGhe)
                     return (
                         <tr key={i}>
                             <td>
@@ -18,7 +17,6 @@ class ChartItem extends Component {
                             {
                                 (hang === "")
                                     ? (danhSachGhe[i].map((items, i) => {
-                                        // console.log(items)
                                         return (
                                             <td key={i} >
                                                 {items.soGhe}
@@ -75,7 +73,6 @@ class ChartItem extends Component {
     }
 }
 const mapStateToProps = (state) => {
-    // console.log(state.TicketReducer.danhSachGhe)
     return {
         danhSachGhe: state.TicketReducer.danhSachGhe,
         data: state.TicketReducer.data,
@@ -83,7 +80,6 @@ const mapStateToProps = (state) => {
 }
 
 const mapStateToDispatchProps = (dispatch) => {
-    // console.log(state.TicketReducer.danhSachGhe)
     // ta cần có một mảng lưu các ghế đã chọn ghế chọn thì push vô còn ko thì splice truyền index vào
     let arrChecked = [];
 
