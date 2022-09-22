@@ -31,67 +31,76 @@ class FormInput extends Component {
 
         let ruleNumber = /^[-+]?[0-9]+$/;
         let newMess = {};
+
         //checkID
+
         //lấy danh sách mảng để so sánh id đã tồn tại chưa
-        let {listStudent} =this.props;
-        console.log(listStudent)
+        let { listStudent } = this.props;
+        let index = listStudent.findIndex((student) => {
+            return student.idName === idName
+        });
 
         if (!idName) {
             newMess.errId = "Vui lòng nhập trường này";
-        } else if (ruleUser.test(idName)) {
-        } else {
+        } else if (index !== -1) {
+            newMess.errId = "Mã SV đã tồn tại";
+        } else if (!(ruleUser.test(idName))) {
             newMess.errId = "Vui lòng nhập kí tự chữ và số (không bao gồm khoảng trắng)";
         }
+
         //checkName
         if (!name) {
             newMess.errName = "Vui lòng nhập trường này";
         }
-        else if (ruleName.test(name)) {
-        } else {
-            newMess.errName = "Vui lòng nhập họ và tên ";
-        }
-        //check Phone
-        if (ruleNumber.test(phoneNumber)) {
-        } else if (!phoneNumber) {
-            newMess.errNumber = "Vui lòng nhập trường này";
+        else if (!ruleName.test(name)) {
+            newMess.errName = "Vui lòng nhập họ và tên (không nhập số) ";
 
-        } else {
+        }
+
+        //check Phone
+        if (!ruleNumber.test(phoneNumber)) {
             newMess.errNumber = "Vui lòng nhập số";
 
+        } else if (!phoneNumber) {
+            newMess.errNumber = "Vui lòng nhập trường này";
         }
+
         // Check email
-        if (ruleEmail.test(email)) {
+        if (!ruleEmail.test(email)) {
+            newMess.errEmail = "Vui lòng nhập đúng email";
         } else if (!email) {
             newMess.errEmail = "Vui lòng nhập trường này";
-        } else {
-            newMess.errEmail = "Vui lòng nhập đúng email";
         }
-        this.setState({ ...this.state.mess, mess: newMess })
+        //Cập nhật state mess
+
         if (Object.keys(newMess).length > 0) {
+            this.setState({
+                ...this.state, mess: newMess
+            })
             return false
         }
+        this.setState({
+            mess: newMess,
+            idName: "",
+            name: "",
+            phoneNumber: "",
+            email: "",
+        })
         let data = { idName, name, phoneNumber, email }
         return data
 
     }
     addStudent = (e) => {
         e.preventDefault();
-        let data = this.checkValidate(this.state)
+        let data = this.checkValidate(this.state);
         if (data) {
             this.props.handleAddStudent(data)
-            // return this.setState({
-            //     ...this.state,
-            //     idName: "",
-            //     name: "",
-            //     phoneNumber: "",
-            //     email: "",
-            // })
+            return
         }
 
     }
     render() {
         let { errId, errName, errNumber, errEmail } = this.state.mess;
-
         return (
             <React.Fragment>
                 <h1 className='bg-dark text-white p-2'>Thông tin sinh viên</h1>
