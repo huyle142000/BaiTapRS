@@ -1,110 +1,100 @@
-import React, { Component } from 'react'
-import { connect } from "react-redux"
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
 class ChartItem extends Component {
-    render() {
-        const arrChairs = this.props.data;
-        const danhSachGhe = this.props.danhSachGhe;
-        return (
-            <React.Fragment>
-                {arrChairs.map((item, i) => {
-                    let { hang } = item
+  render() {
+    const arrChairs = this.props.data;
+    const danhSachGhe = this.props.danhSachGhe;
+    return (
+      <React.Fragment>
+        {arrChairs.map((item, i) => {
+          let { hang } = item;
+          return (
+            <tr key={i}>
+              <td>{hang}</td>
+              {hang === ""
+                ? danhSachGhe[i].map((items, i) => {
+                    return <td key={i}>{items.soGhe}</td>;
+                  })
+                : danhSachGhe[i].map((items, i) => {
+                    let viTri = i + 1;
                     return (
-                        <tr key={i}>
-                            <td>
-                                {hang}
-                            </td>
-                            {
-                                (hang === "")
-                                    ? (danhSachGhe[i].map((items, i) => {
-                                        return (
-                                            <td key={i} >
-                                                {items.soGhe}
-                                            </td>
-                                        )
-                                    }))
-                                    : (danhSachGhe[i].map((items, i) => {
-                                        let viTri = i + 1
-                                        return (
-                                            <td
-                                                key={i}
-                                                className="position-relative"
-                                            >
-                                                <input
-                                                    id={items.soGhe}
-                                                    type="checkbox"
-                                                    value={items.soGhe}
-                                                    disabled={items.daDat}
-                                                />
-                                                <label
-                                                    onClick={() => this.props.chonGhe(items.soGhe, items.gia)}
-                                                    htmlFor={items.soGhe}
-                                                    className='position-absolute chair'
-                                                >
-                                                    <div className={items.daDat === true ? "gheDuocChon" : "ghe"}>
-                                                    </div>
-                                                    <span
-                                                        className='vitri'
-                                                        style={
-                                                            items.daDat === true ? { color: "black" } : { color: "white" }
-                                                        }>{viTri}</span>
-                                                </label>
-                                            </td>
-                                        )
-                                    }))
-
+                      <td key={i} className="position-relative">
+                        <input
+                          id={items.soGhe}
+                          type="checkbox"
+                          value={items.soGhe}
+                          disabled={items.daDat}
+                        />
+                        <label
+                          onClick={() =>
+                            this.props.chonGhe(items.soGhe, items.gia)
+                          }
+                          htmlFor={items.soGhe}
+                          className="position-absolute chair"
+                        >
+                          <div
+                            className={
+                              items.daDat === true ? "gheDuocChon" : "ghe"
                             }
-                        </tr>
-                    )
-
-                })
-                }
-                <tr>
-                    <td colSpan="20">
-                        <button
-                            className="btn btn-danger p-3 font-weight-bold"
-                            onClick={() => { this.props.danhSachDaChon() }}
-                        >Đặt Ghế
-                        </button>
-                    </td>
-                </tr>
-            </React.Fragment>
-        )
-    }
+                          ></div>
+                          <span
+                            className="vitri"
+                            style={
+                              items.daDat === true
+                                ? { color: "black" }
+                                : { color: "white" }
+                            }
+                          >
+                            {viTri}
+                          </span>
+                        </label>
+                      </td>
+                    );
+                  })}
+            </tr>
+          );
+        })}
+        <tr>
+          <td colSpan="20">
+            <button
+              className="btn btn-danger p-3 font-weight-bold"
+              onClick={() => {
+                this.props.danhSachDaChon();
+              }}
+            >
+              Đặt Ghế
+            </button>
+          </td>
+        </tr>
+      </React.Fragment>
+    );
+  }
 }
 const mapStateToProps = (state) => {
-    return {
-        danhSachGhe: state.TicketReducer.danhSachGhe,
-        data: state.TicketReducer.data,
-    }
-}
+  return {
+    danhSachGhe: state.TicketReducer.danhSachGhe,
+    data: state.TicketReducer.data,
+  };
+};
 
 const mapStateToDispatchProps = (dispatch) => {
-    // ta cần có một mảng lưu các ghế đã chọn ghế chọn thì push vô còn ko thì splice truyền index vào
-    let arrChecked = [];
-
-    return {
-        chonGhe(value, gia) {
-            let inputCheck = document.getElementById(`${value}`).checked
-            if (!inputCheck) {
-                arrChecked.push({
-                    value,
-                    gia
-                })
-            } else {
-                let index = arrChecked.findIndex((values) => values === value)
-                arrChecked.splice(index, 1)
-            }
-        },
-        danhSachDaChon() {
-            const action = {
-                type: "DAT_GHE",
-                danhsach: arrChecked
-            }
-            dispatch(action)
-
-        }
-
-    }
-}
-export default connect(mapStateToProps, mapStateToDispatchProps)(ChartItem)
+  return {
+    chonGhe(value, gia) {
+      const action = {
+        type: "CHON_GHE",
+        value: value,
+        gia: gia,
+      };
+      dispatch(action);
+      
+    },
+    danhSachDaChon() {
+      const action = {
+        type: "DAT_GHE",
+      };
+      dispatch(action);
+    },
+  };
+};
+export default connect(mapStateToProps, mapStateToDispatchProps)(ChartItem);
