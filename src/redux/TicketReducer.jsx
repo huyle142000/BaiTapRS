@@ -2,6 +2,7 @@ import data from "../BaiTapReactJS4_datvexemphim/danhSachGhe.json";
 let danhSachGhe = data.map((item) => {
   return item.danhSachGhe;
 });
+
 //1: we create a data in init state to render "Hàng:row"
 //2: we create a danhSachGhe in init state to render "value,number of chair"
 //3: we need a array to know chair is choosen
@@ -27,14 +28,15 @@ export const TicketReducer = (state = initialState, action) => {
   //danhSachGhe
   let danhSachNew = [...state.danhSachGhe];
 
-  //get eleInput
-  let inputCheck = document.getElementById(`${value}`);
   switch (action.type) {
     //create a new var and let it equal the old value danhSachGheDangChon
     case "CHON_GHE":
       //  check atributes Checked of input
       //if check push value and gia into the array when we check it get value before we click so it's not checked so we use !inputCheck
-      if (!inputCheck.checked) {
+      value = action.value.target.value;
+      let checkGhe = action.value.target.checked;
+      console.log(action.value.target.checked);
+      if (checkGhe) {
         danhSachGheDangChonNew.push({
           value,
           gia,
@@ -76,7 +78,10 @@ export const TicketReducer = (state = initialState, action) => {
 
     case "IN_HOA_DON":
       //when we click PrintBill we need resset danhSachGheDaDat and danhSachGheDangChon is [] empty
-
+      state.danhSachGheDaDat.map((item) => {
+        let inputEle = document.querySelector(`#${item.value}`);
+        inputEle.checked = false;
+      });
       //danhSachGheDaDat
       danhSachGheDaDatNew = [];
 
@@ -92,7 +97,6 @@ export const TicketReducer = (state = initialState, action) => {
       //2 step :
       //1: we will get index and delete chair in danhSachGheDaDat
       let indexValue = danhSachGheDaDatNew.findIndex((chair) => {
-        console.log(chair.value, value);
         return chair.value === value;
       });
 
@@ -112,6 +116,7 @@ export const TicketReducer = (state = initialState, action) => {
           return chair;
         });
       });
+      let inputCheck = document.getElementById(`${value}`);
       inputCheck.checked = false;
       state.danhSachGhe = danhSachNew;
       return { ...state };

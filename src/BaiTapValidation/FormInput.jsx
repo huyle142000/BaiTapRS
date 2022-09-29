@@ -1,201 +1,174 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { Component } from "react";
+import { connect } from "react-redux";
 class FormInput extends Component {
-    state = {
-        mess: {
+  state = {
+    mess: { idName: "", name: "", phoneNumber: "", email: "" },
+    valueInput: { idName: "", name: "", phoneNumber: "", email: "" },
+    valid: true,
+  };
+  onChangeValue = (e) => {
+    const { name, value } = e.target;
+    //Regex:
+    let ruleName = /[A-Z a-z]+$/;
 
-        },
-        idName: "",
-        name: "",
-        phoneNumber: "",
-        email: "",
+    let ruleEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    let ruleNumber = /^[-+]?[0-9]+$/;
+    //Create empty err message
+    let err = "";
+
+    //lấy danh sách mảng để so sánh id đã tồn tại chưa
+    let { listStudent } = this.props;
+    if (name === "idName") {
+      let index = listStudent.findIndex((student) => {
+        return student.idName === value;
+      });
+      if (index !== -1) {
+        err = name + "đã tồn tại vui lòng nhập mã khác";
+      }
     }
-    onChangeValue = (e) => {
-        const value = e.target.value;
-        const name = e.target.name;
-        this.setState({ ...this.state, [name]: value })
+
+    //Check Name :
+    if (name === "name") {
+      if (!ruleName.test(value)) {
+        err = "Vui lòng nhập họ và tên (không nhập số) ";
+      }
+    }
+    //check Phone
+    if (name === "phone") {
+      if (!ruleNumber.test(value)) {
+        err = "Vui lòng nhập số";
+      }
+    }
+    // Check email
+    if (name === "email") {
+      if (!ruleEmail.test(value)) {
+        err = "Vui lòng nhập đúng email";
+      }
+    }
+    if (value.trim() === "") {
+      err = "Vui lòng nhập trường này";
     }
 
+    //Copy state curren to assign new value và new err
+    let newValue = { ...this.state.valueInput, [name]: value };
+    let newErr = { ...this.state.mess, [name]: err };
 
-
-    checkValidate = (valuesObj) => {
-
-        // lấy giá trị của các thuộc tính obj
-        let { idName, name, phoneNumber, email } = valuesObj
-        //Regex:
-        let ruleUser = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/;
-
-        let ruleName = /[A-Z a-z]+$/;
-
-        let ruleEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-        let ruleNumber = /^[-+]?[0-9]+$/;
-        let newMess = {};
-
-        //checkID
-
-        //lấy danh sách mảng để so sánh id đã tồn tại chưa
-        let { listStudent } = this.props;
-        let index = listStudent.findIndex((student) => {
-            return student.idName === idName
-        });
-
-        if (!idName) {
-            newMess.errId = "Vui lòng nhập trường này";
-        } else if (index !== -1) {
-            newMess.errId = "Mã SV đã tồn tại";
-        } else if (!(ruleUser.test(idName))) {
-            newMess.errId = "Vui lòng nhập kí tự chữ và số (không bao gồm khoảng trắng)";
-        }
-
-        //checkName
-        if (!name) {
-            newMess.errName = "Vui lòng nhập trường này";
-        }
-        else if (!ruleName.test(name)) {
-            newMess.errName = "Vui lòng nhập họ và tên (không nhập số) ";
-
-        }
-
-        //check Phone
-        if (!ruleNumber.test(phoneNumber)) {
-            newMess.errNumber = "Vui lòng nhập số";
-
-        } else if (!phoneNumber) {
-            newMess.errNumber = "Vui lòng nhập trường này";
-        }
-
-        // Check email
-        if (!ruleEmail.test(email)) {
-            newMess.errEmail = "Vui lòng nhập đúng email";
-        } else if (!email) {
-            newMess.errEmail = "Vui lòng nhập trường này";
-        }
-        //Cập nhật state mess
-
-        if (Object.keys(newMess).length > 0) {
-            this.setState({
-                ...this.state, mess: newMess
-            })
-            return false
-        }
-        this.setState({
-            mess: newMess,
-            idName: "",
-            name: "",
-            phoneNumber: "",
-            email: "",
-        })
-        let data = { idName, name, phoneNumber, email }
-        return data
-
+    //set new state
+    let validNew = { ...this.state.valid };
+    for (let key in this.state.mess) {
+      if (this.state.mess[key] !== "" || this.state.valueInput[key] === "") {
+        validNew = true;
+        break;
+      } else {
+        validNew = false;
+      }
     }
-    addStudent = (e) => {
-        e.preventDefault();
-        let data = this.checkValidate(this.state);
-        if (data) {
-            this.props.handleAddStudent(data)
-            return
-        }
+    this.setState({ valid: validNew, valueInput: newValue, mess: newErr });
+  };
 
-    }
-    render() {
-        let { errId, errName, errNumber, errEmail } = this.state.mess;
-        return (
-            <React.Fragment>
-                <h1 className='bg-dark text-white p-2'>Thông tin sinh viên</h1>
-                <form className="d-flex" onSubmit={(e) => { this.addStudent(e) }}>
-                    <div className="form-group">
-                        <label htmlFor="idInput">Mã</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="idInput"
-                            name='idName'
-                            value={this.state.idName}
-                            onChange={
-                                (e) => { this.onChangeValue(e) }
-                            }
-                        />
-                        <span className="message">
-                            {errId}
-                        </span>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="name">Họ Tên</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="name"
-                            name='name'
-                            value={this.state.name}
-                            onChange={
-                                (e) => { this.onChangeValue(e) }
-                            }
-                        />
-                        <span className="message">
-                            {errName}
-                        </span>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="phoneNumber">Số điện thoại</label>
-                        <input
-                            type="number"
-                            className="form-control"
-                            id="phoneNumber"
-                            name='phoneNumber'
-                            value={this.state.phoneNumber}
-                            onChange={
-                                (e) => { this.onChangeValue(e) }
-                            }
-                        />
-                        <span className="message">
-                            {errNumber}
-                        </span>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="emailInput">Email address</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            id="emailInput"
-                            name='email'
-                            value={this.state.email}
-                            onChange={
-                                (e) => { this.onChangeValue(e) }
-                            }
-                        />
-                        <span className="message">
-                            {errEmail}
-                        </span>
-                    </div>
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                    >Thêm Sinh Viên
-                    </button>
-                </form>
+  addStudent = (e) => {
+    e.preventDefault();
+    this.props.handleAddStudent(this.state.valueInput);
+    this.setState({
+      mess: { idName: "", name: "", phoneNumber: "", email: "" },
+      valueInput: { idName: "", name: "", phoneNumber: "", email: "" },
+      valid: true,
+    });
+  };
 
-            </React.Fragment >
-
-        )
-    }
+  render() {
+    return (
+      <React.Fragment>
+        <h1 className="bg-dark text-white p-2">Thông tin sinh viên</h1>
+        <form
+          className="d-flex"
+          onSubmit={(e) => {
+            this.addStudent(e);
+          }}
+        >
+          <div className="form-group">
+            <label htmlFor="idInput">Mã</label>
+            <input
+              type="text"
+              className="form-control"
+              id="idInput"
+              name="idName"
+              value={this.state.valueInput.idName}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.idName}</span>
+          </div>
+          <div className="form-group">
+            <label htmlFor="name">Họ Tên</label>
+            <input
+              type="text"
+              className="form-control"
+              id="name"
+              name="name"
+              value={this.state.valueInput.name}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.name}</span>
+          </div>
+          <div className="form-group">
+            <label htmlFor="phoneNumber">Số điện thoại</label>
+            <input
+              type="number"
+              className="form-control"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={this.state.valueInput.phoneNumber}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.phoneNumber}</span>
+          </div>
+          <div className="form-group">
+            <label htmlFor="emailInput">Email address</label>
+            <input
+              type="email"
+              className="form-control"
+              id="emailInput"
+              name="email"
+              value={this.state.valueInput.email}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.email}</span>
+          </div>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={this.state.valid}
+          >
+            Thêm Sinh Viên
+          </button>
+        </form>
+      </React.Fragment>
+    );
+  }
 }
 const mapStateToProps = (state) => {
-    return {
-        listStudent: state.ValiReducer.listStudent
-    }
-}
+  return {
+    listStudent: state.ValiReducer.listStudent,
+  };
+};
 const mapDispatchToProps = (dispatch) => {
-    return {
-
-        handleAddStudent(data) {
-            const action = {
-                type: "ADD_STUDENT",
-                payload: data,
-            }
-            dispatch(action)
-        }
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(FormInput)
+  return {
+    handleAddStudent(data) {
+      const action = {
+        type: "ADD_STUDENT",
+        payload: data,
+      };
+      dispatch(action);
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(FormInput);

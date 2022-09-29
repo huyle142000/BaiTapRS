@@ -148,6 +148,7 @@ table {
 
 }
 
+
 .gheDuocChon::before {
     background: orange;
     color: #000;
@@ -155,6 +156,12 @@ table {
     width: 100%;
     height: 100%;
     display: block;
+}
+
+input[type=checkbox]:checked~label .gheDuocChon::before {
+    border-width: 10px;
+    background: green;
+    font-size: 15px;
 }
 
 .gheDangChon {
@@ -174,12 +181,12 @@ input {
     opacity: 0;
 }
 
-input[type=checkbox]:checked~label .ghe::before {
+input[type=checkbox]:checked~label .ghe::after {
     background-color: Green;
     font-size: 15px;
 }
 
-.ghe::before {
+.ghe::after {
     content: "";
     width: 100%;
     height: 100%;
@@ -193,6 +200,7 @@ input[type=checkbox]:checked~label .ghe::before {
     left: 50%;
     transform: translateX(-50%);
 }
-.billBody td{
- color: orange;
+
+.billBody td {
+    color: orange;
 }

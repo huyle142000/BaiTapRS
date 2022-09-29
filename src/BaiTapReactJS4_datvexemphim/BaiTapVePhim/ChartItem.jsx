@@ -25,11 +25,11 @@ class ChartItem extends Component {
                           type="checkbox"
                           value={items.soGhe}
                           disabled={items.daDat}
+                          onClick={(e) =>
+                            this.props.chonGhe(e, items.gia)
+                          }
                         />
                         <label
-                          onClick={() =>
-                            this.props.chonGhe(items.soGhe, items.gia)
-                          }
                           htmlFor={items.soGhe}
                           className="position-absolute chair"
                         >
@@ -87,7 +87,6 @@ const mapStateToDispatchProps = (dispatch) => {
         gia: gia,
       };
       dispatch(action);
-      
     },
     danhSachDaChon() {
       const action = {
@@ -98,3 +97,4 @@ const mapStateToDispatchProps = (dispatch) => {
   };
 };
 export default connect(mapStateToProps, mapStateToDispatchProps)(ChartItem);
+

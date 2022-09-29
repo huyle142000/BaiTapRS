@@ -7,13 +7,13 @@
 //Bài 4: Vé Phim
 import BaiTapVePhim from "./BaiTapReactJS4_datvexemphim/BaiTapVePhim/BaiTapVePhim";
 // import "/Valicss/Validate.css"
+//Bài 5: Check formValidation
+// import BaiTapValidation from "./BaiTapValidation/BaiTapValidation";
 //set up redux
 import { Provider } from "react-redux";
 import { createStore } from "redux";
-// import BaiTapValidation from "./BaiTapValidation/BaiTapValidation";
 import { rootReducer } from "./redux/rootReducer";
 const store = createStore(rootReducer);
-
 
 function App() {
   return (
@@ -25,7 +25,6 @@ function App() {
         <BaiTapVePhim />
         {/* <BaiTapValidation /> */}
       </div>
-
     </Provider>
   );
 }
