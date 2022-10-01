@@ -35,7 +35,6 @@ export const TicketReducer = (state = initialState, action) => {
       //if check push value and gia into the array when we check it get value before we click so it's not checked so we use !inputCheck
       value = action.value.target.value;
       let checkGhe = action.value.target.checked;
-      console.log(action.value.target.checked);
       if (checkGhe) {
         danhSachGheDangChonNew.push({
           value,
