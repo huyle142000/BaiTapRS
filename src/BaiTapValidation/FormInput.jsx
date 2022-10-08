@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { addStudent, updateStudent } from "../redux/Action/ValidateAction";
 class FormInput extends Component {
   state = {
     mess: { idName: "", name: "", phoneNumber: "", email: "" },
@@ -18,9 +19,8 @@ class FormInput extends Component {
     let err = "";
 
     //lấy danh sách mảng để so sánh id đã tồn tại chưa
-    let { listStudent } = this.props;
     if (name === "idName") {
-      let index = listStudent.findIndex((student) => {
+      let index = this.props.list.listStudent.findIndex((student) => {
         return student.idName === value;
       });
       if (index !== -1) {
@@ -53,7 +53,6 @@ class FormInput extends Component {
     //Copy state curren to assign new value và new err
     let newValue = { ...this.state.valueInput, [name]: value };
     let newErr = { ...this.state.mess, [name]: err };
-
     //set new state
     let validNew = { ...this.state.valid };
     for (let key in this.state.mess) {
@@ -69,7 +68,7 @@ class FormInput extends Component {
 
   addStudent = (e) => {
     e.preventDefault();
-    this.props.handleAddStudent(this.state.valueInput);
+    this.props.dispatch(addStudent(this.state.valueInput));
     this.setState({
       mess: { idName: "", name: "", phoneNumber: "", email: "" },
       valueInput: { idName: "", name: "", phoneNumber: "", email: "" },
@@ -81,94 +80,124 @@ class FormInput extends Component {
     return (
       <React.Fragment>
         <h1 className="bg-dark text-white p-2">Thông tin sinh viên</h1>
-        <form
-          className="d-flex"
-          onSubmit={(e) => {
-            this.addStudent(e);
-          }}
-        >
-          <div className="form-group">
-            <label htmlFor="idInput">Mã</label>
-            <input
-              type="text"
-              className="form-control"
-              id="idInput"
-              name="idName"
-              value={this.state.valueInput.idName}
-              onChange={(e) => {
-                this.onChangeValue(e);
-              }}
-            />
-            <span className="message">{this.state.mess.idName}</span>
-          </div>
-          <div className="form-group">
-            <label htmlFor="name">Họ Tên</label>
-            <input
-              type="text"
-              className="form-control"
-              id="name"
-              name="name"
-              value={this.state.valueInput.name}
-              onChange={(e) => {
-                this.onChangeValue(e);
-              }}
-            />
-            <span className="message">{this.state.mess.name}</span>
-          </div>
-          <div className="form-group">
-            <label htmlFor="phoneNumber">Số điện thoại</label>
-            <input
-              type="number"
-              className="form-control"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={this.state.valueInput.phoneNumber}
-              onChange={(e) => {
-                this.onChangeValue(e);
-              }}
-            />
-            <span className="message">{this.state.mess.phoneNumber}</span>
-          </div>
-          <div className="form-group">
-            <label htmlFor="emailInput">Email address</label>
-            <input
-              type="email"
-              className="form-control"
-              id="emailInput"
-              name="email"
-              value={this.state.valueInput.email}
-              onChange={(e) => {
-                this.onChangeValue(e);
-              }}
-            />
-            <span className="message">{this.state.mess.email}</span>
-          </div>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={this.state.valid}
+        {this.props.list.isFilter === false ? (
+          <form
+            className="d-flex"
+            onSubmit={(e) => {
+              this.addStudent(e);
+            }}
           >
-            Thêm Sinh Viên
-          </button>
-        </form>
+            <div className="form-group">
+              <label htmlFor="idInput">Mã</label>
+              <input
+                type="text"
+                className="form-control"
+                id="idInput"
+                name="idName"
+                disabled={this.props.list.isUpdate}
+                value={this.state.valueInput.idName}
+                onChange={(e) => {
+                  this.onChangeValue(e);
+                }}
+              />
+              <span className="message">{this.state.mess.idName}</span>
+            </div>
+            <div className="form-group">
+              <label htmlFor="name">Họ Tên</label>
+              <input
+                type="text"
+                className="form-control"
+                id="name"
+                name="name"
+                value={this.state.valueInput.name}
+                onChange={(e) => {
+                  this.onChangeValue(e);
+                }}
+              />
+              <span className="message">{this.state.mess.name}</span>
+            </div>
+            <div className="form-group">
+              <label htmlFor="phoneNumber">Số điện thoại</label>
+              <input
+                type="number"
+                className="form-control"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={this.state.valueInput.phoneNumber}
+                onChange={(e) => {
+                  this.onChangeValue(e);
+                }}
+              />
+              <span className="message">{this.state.mess.phoneNumber}</span>
+            </div>
+            <div className="form-group">
+              <label htmlFor="emailInput">Email address</label>
+              <input
+                type="email"
+                className="form-control"
+                id="emailInput"
+                name="email"
+                value={this.state.valueInput.email}
+                onChange={(e) => {
+                  this.onChangeValue(e);
+                }}
+              />
+              <span className="message">{this.state.mess.email}</span>
+            </div>
+            {this.props.list.isUpdate ? (
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={this.state.valid}
+                onClick={() => {
+                  this.setState({
+                    mess: { idName: "", name: "", phoneNumber: "", email: "" },
+                    valueInput: {
+                      idName: "",
+                      name: "",
+                      phoneNumber: "",
+                      email: "",
+                    },
+                    valid: true,
+                  });
+                  this.props.dispatch(updateStudent(this.state.valueInput));
+                }}
+              >
+                Cật Nhật
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={this.state.valid}
+              >
+                Thêm Sinh Viên
+              </button>
+            )}
+          </form>
+        ) : (
+          ""
+        )}
       </React.Fragment>
     );
   }
+
+  componentDidUpdate(prevProps, preState) {
+    if (
+      prevProps.list.checkStudent.idName !== this.props.list.checkStudent.idName
+    ) {
+      this.setState({
+        ...this.state,
+        valueInput: this.props.list.checkStudent,
+      });
+    }
+  }
 }
+
 const mapStateToProps = (state) => {
   return {
-    listStudent: state.ValiReducer.listStudent,
+    list: state.ValiReducer,
   };
 };
-const mapDispatchToProps = (dispatch) => {
-  return {
-    handleAddStudent(data) {
-      const action = {
-        type: "ADD_STUDENT",
-        payload: data,
-      };
-      dispatch(action);
-    },
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(FormInput);
+
+export default connect(mapStateToProps)(FormInput);
