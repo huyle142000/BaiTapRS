@@ -55,14 +55,15 @@ class FormInput extends Component {
     let newErr = { ...this.state.mess, [name]: err };
     //set new state
     let validNew = { ...this.state.valid };
-    for (let key in this.state.mess) {
-      if (this.state.mess[key] !== "" || this.state.valueInput[key] === "") {
+    for (let key in newErr) {
+      if (newErr[key] !== "" || newValue[key] === "") {
         validNew = true;
         break;
       } else {
         validNew = false;
       }
     }
+
     this.setState({ valid: validNew, valueInput: newValue, mess: newErr });
   };
 
@@ -80,104 +81,104 @@ class FormInput extends Component {
     return (
       <React.Fragment>
         <h1 className="bg-dark text-white p-2">Thông tin sinh viên</h1>
-        {this.props.list.isFilter === false ? (
-          <form
-            className="d-flex"
-            onSubmit={(e) => {
-              this.addStudent(e);
-            }}
-          >
-            <div className="form-group">
-              <label htmlFor="idInput">Mã</label>
-              <input
-                type="text"
-                className="form-control"
-                id="idInput"
-                name="idName"
-                disabled={this.props.list.isUpdate}
-                value={this.state.valueInput.idName}
-                onChange={(e) => {
-                  this.onChangeValue(e);
-                }}
-              />
-              <span className="message">{this.state.mess.idName}</span>
-            </div>
-            <div className="form-group">
-              <label htmlFor="name">Họ Tên</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                name="name"
-                value={this.state.valueInput.name}
-                onChange={(e) => {
-                  this.onChangeValue(e);
-                }}
-              />
-              <span className="message">{this.state.mess.name}</span>
-            </div>
-            <div className="form-group">
-              <label htmlFor="phoneNumber">Số điện thoại</label>
-              <input
-                type="number"
-                className="form-control"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={this.state.valueInput.phoneNumber}
-                onChange={(e) => {
-                  this.onChangeValue(e);
-                }}
-              />
-              <span className="message">{this.state.mess.phoneNumber}</span>
-            </div>
-            <div className="form-group">
-              <label htmlFor="emailInput">Email address</label>
-              <input
-                type="email"
-                className="form-control"
-                id="emailInput"
-                name="email"
-                value={this.state.valueInput.email}
-                onChange={(e) => {
-                  this.onChangeValue(e);
-                }}
-              />
-              <span className="message">{this.state.mess.email}</span>
-            </div>
-            {this.props.list.isUpdate ? (
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={this.state.valid}
-                onClick={() => {
-                  this.setState({
-                    mess: { idName: "", name: "", phoneNumber: "", email: "" },
-                    valueInput: {
-                      idName: "",
-                      name: "",
-                      phoneNumber: "",
-                      email: "",
-                    },
-                    valid: true,
-                  });
-                  this.props.dispatch(updateStudent(this.state.valueInput));
-                }}
-              >
-                Cật Nhật
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={this.state.valid}
-              >
-                Thêm Sinh Viên
-              </button>
-            )}
-          </form>
-        ) : (
+        {/* {this.props.list.isFilter === false ? ( */}
+        <form
+          className="d-flex"
+          onSubmit={(e) => {
+            this.addStudent(e);
+          }}
+        >
+          <div className="form-group">
+            <label htmlFor="idInput">Mã</label>
+            <input
+              type="text"
+              className="form-control"
+              id="idInput"
+              name="idName"
+              disabled={this.props.list.isUpdate}
+              value={this.state.valueInput.idName}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.idName}</span>
+          </div>
+          <div className="form-group">
+            <label htmlFor="name">Họ Tên</label>
+            <input
+              type="text"
+              className="form-control"
+              id="name"
+              name="name"
+              value={this.state.valueInput.name}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.name}</span>
+          </div>
+          <div className="form-group">
+            <label htmlFor="phoneNumber">Số điện thoại</label>
+            <input
+              type="number"
+              className="form-control"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={this.state.valueInput.phoneNumber}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.phoneNumber}</span>
+          </div>
+          <div className="form-group">
+            <label htmlFor="emailInput">Email address</label>
+            <input
+              type="email"
+              className="form-control"
+              id="emailInput"
+              name="email"
+              value={this.state.valueInput.email}
+              onChange={(e) => {
+                this.onChangeValue(e);
+              }}
+            />
+            <span className="message">{this.state.mess.email}</span>
+          </div>
+          {this.props.list.isUpdate === false && (
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={this.state.valid}
+            >
+              Thêm Sinh Viên
+            </button>
+          )}
+          {this.props.list.isUpdate === true && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={this.state.valid}
+              onClick={() => {
+                this.setState({
+                  ...this.state,
+                  valueInput: {
+                    idName: "",
+                    name: "",
+                    phoneNumber: "",
+                    email: "",
+                  },
+                });
+                this.props.dispatch(updateStudent(this.state.valueInput));
+              }}
+            >
+              Cật Nhật
+            </button>
+          )}
+        </form>
+        {/* ) : (
           ""
-        )}
+        )} */}
       </React.Fragment>
     );
   }

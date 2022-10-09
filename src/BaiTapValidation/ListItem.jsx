@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { checkStudent } from "../redux/Action/ValidateAction";
+import { checkStudent, deleteStudent } from "../redux/Action/ValidateAction";
 class ListItem extends Component {
   render() {
     let { listStudent } = this.props;
@@ -22,7 +22,14 @@ class ListItem extends Component {
                 >
                   Xem
                 </button>
-                <button className="btn btn-danger">Xóa</button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => {
+                    this.props.dispatch(deleteStudent(student.idName));
+                  }}
+                >
+                  Xóa
+                </button>
               </td>
             </tr>
           );

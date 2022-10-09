@@ -4,6 +4,7 @@ import {
   UPDATE_STUDENT,
   FILTER_STUDENT,
   BACKLIST_STUDENT,
+  DELETE_STUDENT,
 } from "../TypeAction/ValidateType";
 
 export const checkStudent = (student) => {
@@ -34,5 +35,12 @@ export const filterStudent = (student) => {
 export const backList = () => {
   return {
     type: BACKLIST_STUDENT,
+  };
+};
+
+export const deleteStudent = (student) => {
+  return {
+    type: DELETE_STUDENT,
+    student,
   };
 };

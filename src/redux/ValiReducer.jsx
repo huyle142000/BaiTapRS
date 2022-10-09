@@ -1,5 +1,5 @@
 const init = {
-  checkStudent: {},
+  checkStudent: { idName: "", name: "", phoneNumber: "", email: "" },
   isUpdate: false,
   listStudent: [
     {
@@ -10,7 +10,19 @@ const init = {
     },
     {
       idName: "sadfsfadf",
-      name: "ádfsadf",
+      name: "ádfsadfafasfdasdf",
+      phoneNumber: 123123123213,
+      email: "sadfasdfasdf",
+    },
+    {
+      idName: "123",
+      name: "ádfsadfafasfdasdf",
+      phoneNumber: 123123123213,
+      email: "sadfasdfasdf",
+    },
+    {
+      idName: "23434",
+      name: "ádfsadfafasfdasdf",
       phoneNumber: 123123123213,
       email: "sadfasdfasdf",
     },
@@ -19,9 +31,17 @@ const init = {
   isFilter: false,
 };
 export const ValiReducer = (state = init, action) => {
+  let newState = { ...state };
+
   switch (action.type) {
     case "ADD_STUDENT":
-      let newListStudent = [...state.listStudent, action.payload];
+      let newListStudent;
+      if (state.isFilter) {
+        newListStudent = [...state.backUpList, action.payload];
+        state.isFilter = false;
+      } else {
+        newListStudent = [...state.listStudent, action.payload];
+      }
       state.listStudent = newListStudent;
       return { ...state };
     case "CHECK_STUDENT":
@@ -34,14 +54,13 @@ export const ValiReducer = (state = init, action) => {
         (student) => student.idName === action.student.idName
       );
       state.listStudent[indexFind] = action.student;
-      state.listStudent = [...state.listStudent];
       state.isUpdate = false;
-      state.checkStudent = {};
+      state.listStudent = [...state.listStudent];
       return { ...state };
     case "FILTER_STUDENT":
       let valueFilter = action.student.replaceAll(" ", "").toLowerCase();
 
-      let listFilter = state.listStudent.filter((student) => {
+      let listFilter = newState.listStudent.filter((student) => {
         let newIDStudent = student.idName.replaceAll(" ", "").toLowerCase();
         let newNameStudent = student.name.replaceAll(" ", "").toLowerCase();
 
@@ -53,18 +72,40 @@ export const ValiReducer = (state = init, action) => {
       });
       if (
         listFilter.length === 0 ||
-        listFilter.length === state.listStudent.length
+        listFilter.length === newState.listStudent.length
       ) {
-        return { ...state };
       } else {
-        state.backUpList = [...state.listStudent];
-        state.listStudent = [...listFilter];
-        state.isFilter = true;
+        newState.backUpList = [...newState.listStudent];
+        newState.listStudent = [...listFilter];
+        newState.isFilter = true;
       }
+      newState.isUpdate = false;
+      newState.checkStudent = {
+        idName: "",
+        name: "",
+        phoneNumber: "",
+        email: "",
+      };
+      state = newState;
       return { ...state };
     case "BACKLIST_STUDENT":
       state.listStudent = [...state.backUpList];
       state.isFilter = false;
+      return { ...state };
+    case "DELETE_STUDENT":
+      let filterDeleteList;
+      if (state.isFilter) {
+        filterDeleteList = state.backUpList.filter(
+          (student) => student.idName !== action.student
+        );
+        state.isFilter = false;
+      } else {
+        filterDeleteList = state.listStudent.filter(
+          (student) => student.idName !== action.student
+        );
+      }
+
+      state.listStudent = filterDeleteList;
       return { ...state };
 
     default:
