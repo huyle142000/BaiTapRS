@@ -78,10 +78,10 @@ class FormInput extends Component {
   };
 
   render() {
+    console.log(this.props.list.isFilter);
     return (
       <React.Fragment>
         <h1 className="bg-dark text-white p-2">Thông tin sinh viên</h1>
-        {/* {this.props.list.isFilter === false ? ( */}
         <form
           className="d-flex"
           onSubmit={(e) => {
@@ -95,7 +95,11 @@ class FormInput extends Component {
               className="form-control"
               id="idInput"
               name="idName"
-              disabled={this.props.list.isUpdate}
+              disabled={
+                this.props.list.isUpdate && this.props.list.isFilter
+                  ? true
+                  : false
+              }
               value={this.state.valueInput.idName}
               onChange={(e) => {
                 this.onChangeValue(e);
@@ -176,9 +180,6 @@ class FormInput extends Component {
             </button>
           )}
         </form>
-        {/* ) : (
-          ""
-        )} */}
       </React.Fragment>
     );
   }
